@@ -1,0 +1,307 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f8fafc;
+  color: #1f2937;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* HEADER */
+.header {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* MAIN CONTAINER */
+.container {
+  display: flex;
+  height: calc(100vh - 60px);
+  gap: 16px;
+  padding: 16px;
+}
+
+/* LEFT PANEL */
+.left {
+  width: 35%;
+  min-width: 300px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* RIGHT PANEL */
+.right {
+  width: 65%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CARD */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  width: 100%;
+}
+
+/* RIGHT CARD FULL HEIGHT */
+.right .card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TITLE */
+h2 {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+/* LABEL */
+label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* INPUTS */
+input, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  height: 44px;
+}
+
+textarea {
+  height: 90px;
+  resize: none;
+}
+
+/* INPUT FOCUS */
+input:focus, textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+/* BUTTON GROUP */
+.btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+/* BUTTON */
+.btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* PRIMARY */
+.primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+.primary:hover {
+  background: #1d4ed8;
+}
+
+/* SECONDARY */
+.secondary {
+  background: white;
+  border: 1px solid #d1d5db;
+}
+
+.secondary:hover {
+  background: #f1f5f9;
+}
+
+/* MESSAGE */
+#msg {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* SEARCH BAR */
+.top-bar input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* TABLE CONTAINER */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  border-radius: 8px;
+}
+#updateBtn {
+  margin-left: 10px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+/* RADIO SIZE FIX */
+.radio-cell input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  transform: scale(1); /* reset any zoom */
+  cursor: pointer;
+}
+
+/* CENTER ALIGN */
+.radio-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background: #f1f5f9;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+}
+
+/* ROW STYLE */
+tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+tbody tr:hover {
+  background: #e0e7ff;
+}
+
+/* SCROLLBAR */
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5f5;
+  border-radius: 10px;
+}
+
+
+/* --------HINT -----------*/
+.hint {
+  font-size: 12px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+  color: #ef4444;
+  display: none;
+}
+.input-warning {
+  border-color: #ef4444;
+}
+/* -------Delete Button -----------*/
+
+.delete-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+/* DELETE BUTTON NORMAL */
+/* UPDATE + DELETE SAME BASE STYLE */
+#updateBtn,
+#deleteBtn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* NORMAL STATE (BLUE) */
+#updateBtn,
+#deleteBtn {
+  background: #2563eb;
+  color: white;
+}
+
+/* HOVER */
+#updateBtn:hover,
+#deleteBtn:hover {
+  background: #1d4ed8;
+}
+
+/* DELETE ACTIVE (RED MODE) */
+.delete-active {
+  background: #ef4444 !important;
+}
+
+.delete-active:hover {
+  background: #dc2626 !important;
+}
+/* DELETE CHECKBOX SIZE FIX */
+.delete-cell input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  transform: scale(1);  /* 🔥 NORMAL SIZE */
+  cursor: pointer;
+}
+

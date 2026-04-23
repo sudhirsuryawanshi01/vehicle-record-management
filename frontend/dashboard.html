@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DL Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="header">
+  <h3>DL Dashboard</h3>
+
+  <div style="display:flex; gap:10px;">
+    <button onclick="window.location.href='/rc'">
+      Switch to RC
+    </button>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+<div class="container">
+
+
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="card">
+      <h2>Add Record</h2>
+
+
+      <input id="dl_number" placeholder="Enter DL Number" oninput="toUppercase('dl_number'); checkDuplicate()">
+      <div id="dlHint" class="hint"></div>
+
+      <input id="name" placeholder="Enter Your FULL Name" oninput="toUppercase('name'); checkDuplicate()">
+      <div id="nameHint" class="hint"></div>
+
+      <label>DOB</label>
+      <input type="date" id="dob">
+
+      <label>DOI</label>
+      <input type="date" id="doi">
+
+      <input id="mob_no" placeholder="Mobile Number">
+
+      <input id="address" placeholder="Enter address" oninput="toUppercase('address')">
+      
+      <label>Validity</label>
+      <input type="date" id="validity">
+
+      <input id="llr" placeholder="Enter LLR Paid" oninput="toUppercase('llr')">
+
+      <input id="dl" placeholder="Enter DL Paid" oninput="toUppercase('dl')">
+      
+      <input type="number" id="total" placeholder="Total">
+
+      <div class="btn-group">
+        <button class="btn primary" onclick="addData()">Submit</button>
+        <button class="btn secondary" onclick="resetForm()">Reset</button>
+      </div>
+
+      <p id="msg"></p>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="top-bar">
+  <input id="search" placeholder="Search by DL or Name" onkeyup="filterData()">
+
+  <div style="display:flex; gap:8px; margin-top:8px;">
+    <button id="updateBtn" onclick="toggleUpdate()">Update</button>
+
+    <button id="deleteBtn" onclick="handleDelete()">Delete</button>
+
+    <button id="confirmDeleteBtn" onclick="deleteSelected()" style="display:none;">
+      Confirm Delete
+    </button>
+  </div>
+</div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th id="deleteHeader" style="display:none;">Select</th>
+              <th id="radioHeader" style="display:none;">Select</th>
+              <th>DL No</th>
+              <th>Name</th>
+              <th>DOB</th>
+              <th>DOI</th>
+              <th>Mobile</th>
+              <th>Address</th>
+              <th>Validity</th>
+              <th>LLR</th>
+              <th>DL</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

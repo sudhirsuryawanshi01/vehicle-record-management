@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RC Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+  <h3>RC Dashboard</h3>
+
+  <div style="display:flex; gap:10px;">
+    <button onclick="window.location.href='/dashboard'">Switch to LLR</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="card">
+
+      <h2>Add RC Record</h2>
+
+<input id="mv_number" placeholder="MV Number" oninput="toUppercase('mv_number')">
+
+<input id="name" placeholder="Name" oninput="toUppercase('name')">
+
+<input id="address" placeholder="Address" oninput="toUppercase('address')">
+
+<input id="phone" placeholder="Phone Number" oninput="toUppercase('phone')">
+
+<input id="ch_number" placeholder="CH Number" oninput="toUppercase('ch_number')">
+
+<input id="type_work" placeholder="Type of Work" oninput="toUppercase('type_work')">
+
+<input id="rupees" type="number" placeholder="Rupees">
+
+      <div class="btn-group">
+        <button class="btn primary" onclick="addRC()">Submit</button>
+        <button class="btn secondary" onclick="resetForm()">Reset</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="card">
+
+      <div class="top-bar">
+        <input id="search" placeholder="Search..." onkeyup="filterRC()">
+        <button id="updateBtn" onclick="toggleUpdate()">Update</button>
+        <button id="deleteBtn" onclick="handleDelete()">Delete</button>
+        <button id="confirmDeleteBtn" onclick="deleteSelected()" style="display:none;">Confirm Delete</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th id="deleteHeader" style="display:none;">Select</th>
+              <th id="radioHeader" style="display:none;">Select</th>
+
+              <th>MV NUMBER</th>
+              <th>NAME</th>
+              <th>ADDRESS</th>
+              <th>PHONE NUMBER</th>
+              <th>CH NUMBER</th>
+              <th>TYPE OF WORK</th>
+              <th>RUPEES</th>
+            </tr>
+          </thead>
+
+          <tbody id="tableBody"></tbody>
+
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+let allData = [];
+let updateMode = false;
+let deleteMode = false;
+let editId = null;
+
+// LOAD
+async function loadRC() {
+  let res = await fetch('/get-data-rc');
+  let data = await res.json();
+
+  allData = data;
+  renderTable(data);
+}
+
+// TABLE
+function renderTable(data) {
+  let table = document.getElementById("tableBody");
+  table.innerHTML = "";
+
+  data.forEach(item => {
+    table.innerHTML += `
+      <tr>
+
+        <td style="display:${deleteMode ? 'table-cell' : 'none'}">
+          <input type="checkbox" name="deleteRow" value="${item.id}">
+        </td>
+
+        <td style="display:${updateMode ? 'table-cell' : 'none'}">
+          <input type="radio" name="selectRow" value="${item.id}">
+        </td>
+
+        <td>${item["MV NUMBER"]}</td>
+        <td>${item["NAME"]}</td>
+        <td>${item["ADDRESS"]}</td>
+        <td>${item["PHONE NUMBER"]}</td>
+        <td>${item["CH NUMBER"]}</td>
+        <td>${item["TYPE OF WORK"]}</td>
+        <td>${item["RUPEES"]}</td>
+
+      </tr>
+    `;
+  });
+}
+function toUppercase(id) {
+  let el = document.getElementById(id);
+  el.value = el.value.toUpperCase();
+}
+// ADD / UPDATE
+async function addRC() {
+
+  let data = {
+    "MV NUMBER": document.getElementById("mv_number").value,
+    "NAME": document.getElementById("name").value,
+    "ADDRESS": document.getElementById("address").value,
+    "PHONE NUMBER": document.getElementById("phone").value,
+    "CH NUMBER": document.getElementById("ch_number").value,
+    "TYPE OF WORK": document.getElementById("type_work").value,
+    "RUPEES": document.getElementById("rupees").value
+  };
+
+  if (editId) {
+    await fetch(`/update-rc/${editId}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+
+    updateMode = false;
+    editId = null;
+    document.getElementById("updateBtn").innerText = "Update";
+    document.getElementById("radioHeader").style.display = "none";
+
+  } else {
+    await fetch('/add-rc', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+  }
+
+  resetForm();
+  loadRC();
+}
+
+// UPDATE MODE
+function toggleUpdate() {
+  updateMode = !updateMode;
+
+  document.getElementById("updateBtn").innerText = updateMode ? "Cancel" : "Update";
+  document.getElementById("radioHeader").style.display = updateMode ? "table-cell" : "none";
+
+  loadRC();
+}
+
+// SELECT
+document.addEventListener("change", function(e) {
+  if (e.target.name === "selectRow") {
+    let id = parseInt(e.target.value);
+    let item = allData.find(d => d.id === id);
+
+    document.getElementById("mv_number").value = item["MV NUMBER"];
+    document.getElementById("name").value = item["NAME"];
+    document.getElementById("address").value = item["ADDRESS"];
+    document.getElementById("phone").value = item["PHONE NUMBER"];
+    document.getElementById("ch_number").value = item["CH NUMBER"];
+    document.getElementById("type_work").value = item["TYPE OF WORK"];
+    document.getElementById("rupees").value = item["RUPEES"];
+
+    editId = id;
+  }
+});
+
+// DELETE MODE
+function handleDelete() {
+  deleteMode = !deleteMode;
+
+  document.getElementById("deleteBtn").innerText = deleteMode ? "Cancel" : "Delete";
+  document.getElementById("deleteHeader").style.display = deleteMode ? "table-cell" : "none";
+  document.getElementById("confirmDeleteBtn").style.display = deleteMode ? "inline-block" : "none";
+
+  loadRC();
+}
+
+// DELETE
+async function deleteSelected() {
+  let selected = document.querySelectorAll('input[name="deleteRow"]:checked');
+
+  for (let cb of selected) {
+    await fetch(`/delete-rc/${cb.value}`, { method: 'DELETE' });
+  }
+
+  deleteMode = false;
+  document.getElementById("deleteBtn").innerText = "Delete";
+  document.getElementById("deleteHeader").style.display = "none";
+  document.getElementById("confirmDeleteBtn").style.display = "none";
+
+  loadRC();
+}
+
+// SEARCH
+function filterRC() {
+  let s = document.getElementById("search").value.toLowerCase();
+
+  let f = allData.filter(i =>
+    (i["MV NUMBER"] || "").toLowerCase().includes(s) ||
+    (i["NAME"] || "").toLowerCase().includes(s)
+  );
+
+  renderTable(f);
+}
+
+// RESET
+function resetForm() {
+  document.querySelectorAll("input").forEach(el => el.value = "");
+}
+
+// LOGOUT
+function logout() {
+  fetch('/logout').then(() => {
+    window.location.href = "/";
+    location.reload();   // 🔥
+  });
+}
+
+loadRC();
+
+</script>
+
+</body>
+</html>
