@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
 from supabase import create_client
-from config import SUPABASE_URL, SUPABASE_KEY
+import os
 from flask_cors import CORS   # 🔥 ADD
-
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 app = Flask(__name__)
 app.secret_key = "secret123"
 
