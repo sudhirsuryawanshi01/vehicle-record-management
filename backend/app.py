@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
 from supabase import create_client
 from config import SUPABASE_URL, SUPABASE_KEY
+from flask_cors import CORS   # 🔥 ADD
 
 app = Flask(__name__)
 app.secret_key = "secret123"
+
+# 🔥 CORS enable (IMPORTANT for Vercel)
+CORS(app)
 
 # Supabase connect
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -20,8 +24,7 @@ def home():
 @app.route('/dashboard')
 def dashboard():
     if 'user' not in session:
-        return redirect('/')   # 🔥 login page
-
+        return redirect('/')
     return render_template('dashboard.html')
 
 
@@ -31,7 +34,6 @@ def dashboard():
 def rc_dashboard():
     if 'user' not in session:
         return redirect('/')
-
     return render_template('rc_dashboard.html')
 
 
@@ -70,7 +72,7 @@ def logout():
 
 
 # =====================================================
-# 🔵 LLR APIs (existing system)
+# 🔵 LLR APIs
 # =====================================================
 
 @app.route('/add-data', methods=['POST'])
@@ -81,7 +83,6 @@ def add_data():
 
         data = request.json
 
-        # uppercase fix
         for key in data:
             if isinstance(data[key], str):
                 data[key] = data[key].upper()
@@ -148,7 +149,7 @@ def delete_data(id):
 
 
 # =====================================================
-# 🟢 RC APIs (NEW SYSTEM)
+# 🟢 RC APIs
 # =====================================================
 
 @app.route('/add-rc', methods=['POST'])
@@ -159,7 +160,6 @@ def add_rc():
 
         data = request.json
 
-        # uppercase fix
         for key in data:
             if isinstance(data[key], str):
                 data[key] = data[key].upper()
@@ -171,6 +171,7 @@ def add_rc():
     except Exception as e:
         print("RC ADD ERROR:", e)
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/update-rc/<int:id>', methods=['PUT'])
 def update_rc(id):
@@ -197,15 +198,22 @@ def get_rc():
 
     return jsonify(res.data)
 
+
+# =====================================================
+# 🔒 CACHE CONTROL
+# =====================================================
+
 @app.after_request
 def add_header(response):
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     return response
+
+
 # =====================================================
 # RUN
 # =====================================================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
