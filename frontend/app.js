@@ -216,7 +216,7 @@ function logout() {
   fetch(`${BASE_URL}/logout`, {
     credentials: "include"
   }).then(() => {
-    window.location.href = "/";
+    window.location.href = "login.html";
     location.reload();
   });
 }
