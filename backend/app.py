@@ -9,6 +9,7 @@ app = Flask(__name__)
 app.secret_key = "secret123"
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 from flask_cors import CORS
 
 CORS(app,
