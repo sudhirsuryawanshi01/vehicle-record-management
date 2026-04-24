@@ -7,6 +7,8 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") 
 app = Flask(__name__)
 app.secret_key = "secret123"
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
 from flask_cors import CORS
 
 CORS(app,
