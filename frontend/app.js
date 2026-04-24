@@ -5,31 +5,43 @@ let deleteMode = false;
 let updateMode = false;
 let editId = null;
 
-// LOAD
+// LOAD DATA
 async function loadData() {
   let res = await fetch(`${BASE_URL}/get-data`);
   let data = await res.json();
-
   allData = data;
   renderTable(data);
 }
 
-// DELETE
-async function deleteSelected() {
-  let selected = document.querySelectorAll('input[name="deleteRow"]:checked');
+// RENDER TABLE
+function renderTable(data) {
+  let table = document.getElementById("tableBody");
+  table.innerHTML = "";
 
-  for (let checkbox of selected) {
-    await fetch(`${BASE_URL}/delete/${checkbox.value}`, {
-      method: 'DELETE'
-    });
-  }
+  data.forEach(item => {
+    table.innerHTML += `
+      <tr>
+        <td style="display:${deleteMode ? 'table-cell' : 'none'}">
+          <input type="checkbox" name="deleteRow" value="${item.id}">
+        </td>
 
-  deleteMode = false;
-  document.getElementById("deleteBtn").innerText = "Delete";
-  document.getElementById("confirmDeleteBtn").style.display = "none";
-  document.getElementById("deleteHeader").style.display = "none";
+        <td style="display:${updateMode ? 'table-cell' : 'none'}">
+          <input type="radio" name="selectRow" value="${item.id}">
+        </td>
 
-  loadData();
+        <td>${item.dl_number}</td>
+        <td>${item.name}</td>
+        <td>${item.dob}</td>
+        <td>${item.doi}</td>
+        <td>${item.mob_no}</td>
+        <td>${item.address}</td>
+        <td>${item.validity}</td>
+        <td>${item.llr}</td>
+        <td>${item.dl}</td>
+        <td>${item.total}</td>
+      </tr>
+    `;
+  });
 }
 
 // ADD / UPDATE
@@ -65,11 +77,42 @@ async function addData() {
   loadData();
 }
 
+// DELETE
+async function deleteSelected() {
+  let selected = document.querySelectorAll('input[name="deleteRow"]:checked');
+
+  for (let checkbox of selected) {
+    await fetch(`${BASE_URL}/delete/${checkbox.value}`, {
+      method: 'DELETE'
+    });
+  }
+
+  deleteMode = false;
+  loadData();
+}
+
 // LOGOUT
 function logout() {
   fetch(`${BASE_URL}/logout`).then(() => {
-    window.location.href = "/";
+    window.location.href = "login.html";
   });
+}
+
+// RESET
+function resetForm() {
+  document.querySelectorAll("input").forEach(el => el.value = "");
+}
+
+// SEARCH
+function filterData() {
+  let search = document.getElementById("search").value.toLowerCase();
+
+  let filtered = allData.filter(item =>
+    (item.name || "").toLowerCase().includes(search) ||
+    (item.dl_number || "").toLowerCase().includes(search)
+  );
+
+  renderTable(filtered);
 }
 
 loadData();
