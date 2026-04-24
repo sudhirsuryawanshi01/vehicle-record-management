@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 CORS(app,
      supports_credentials=True,
-     origins=["https://datatextry.vercel.app"])
+     origins=["https://dataxentry.vercel.app"])
 
 # Supabase connect
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
