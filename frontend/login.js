@@ -5,10 +5,11 @@ async function login() {
   let password = document.getElementById("password").value;
 
   let res = await fetch(`${BASE_URL}/login`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({username, password})
-  });
+  method: 'POST',
+  credentials: "include",   
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({username, password})
+});
 
   let data = await res.json();
 
