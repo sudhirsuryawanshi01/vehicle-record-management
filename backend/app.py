@@ -1,14 +1,17 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
 from supabase import create_client
 import os
-from flask_cors import CORS
+
 
 SUPABASE_URL = os.getenv("SUPABASE_URL") 
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") 
 app = Flask(__name__)
 app.secret_key = "secret123"
-# 🔥 CORS enable (IMPORTANT for Vercel)
-CORS(app)
+from flask_cors import CORS
+
+CORS(app,
+     supports_credentials=True,
+     origins=["https://datatextry.vercel.app"])
 
 # Supabase connect
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
