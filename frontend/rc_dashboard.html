@@ -254,13 +254,11 @@ function resetForm() {
   document.querySelectorAll("input").forEach(el => el.value = "");
 }
 
-// LOGOUT
 function logout() {
   fetch(`${BASE_URL}/logout`, {
     credentials: "include"
   }).then(() => {
-    window.location.href = "/";
-    location.reload();
+    window.location.href = "login.html";   
   });
 }
 
