@@ -13,7 +13,7 @@ async function login() {
   let data = await res.json();
 
   if (data.success) {
-    window.location.href = "dashboard.html"; // 🔥 important
+    window.location.href = "dashboard.html";
   } else {
     document.getElementById("msg").innerText = "Invalid login";
   }
