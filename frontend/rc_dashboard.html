@@ -96,8 +96,11 @@ let editId = null;
 
 // LOAD
 async function loadRC() {
-  let res = await fetch(`${BASE_URL}/get-data-rc`);
+  let res = await fetch(`${BASE_URL}/get-data-rc`, {
+    credentials: "include"
+  });
   let data = await res.json();
+
   allData = data;
   renderTable(data);
 }
@@ -110,6 +113,7 @@ function renderTable(data) {
   data.forEach(item => {
     table.innerHTML += `
       <tr>
+
         <td style="display:${deleteMode ? 'table-cell' : 'none'}">
           <input type="checkbox" name="deleteRow" value="${item.id}">
         </td>
@@ -125,13 +129,20 @@ function renderTable(data) {
         <td>${item["CH NUMBER"]}</td>
         <td>${item["TYPE OF WORK"]}</td>
         <td>${item["RUPEES"]}</td>
+
       </tr>
     `;
   });
 }
 
-// ADD
+function toUppercase(id) {
+  let el = document.getElementById(id);
+  el.value = el.value.toUpperCase();
+}
+
+// ADD / UPDATE
 async function addRC() {
+
   let data = {
     "MV NUMBER": document.getElementById("mv_number").value,
     "NAME": document.getElementById("name").value,
@@ -145,12 +156,20 @@ async function addRC() {
   if (editId) {
     await fetch(`${BASE_URL}/update-rc/${editId}`, {
       method: 'PUT',
+      credentials: "include",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
     });
+
+    updateMode = false;
+    editId = null;
+    document.getElementById("updateBtn").innerText = "Update";
+    document.getElementById("radioHeader").style.display = "none";
+
   } else {
     await fetch(`${BASE_URL}/add-rc`, {
       method: 'POST',
+      credentials: "include",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
     });
@@ -160,28 +179,89 @@ async function addRC() {
   loadRC();
 }
 
+// UPDATE MODE
+function toggleUpdate() {
+  updateMode = !updateMode;
+
+  document.getElementById("updateBtn").innerText = updateMode ? "Cancel" : "Update";
+  document.getElementById("radioHeader").style.display = updateMode ? "table-cell" : "none";
+
+  loadRC();
+}
+
+// SELECT
+document.addEventListener("change", function(e) {
+  if (e.target.name === "selectRow") {
+    let id = parseInt(e.target.value);
+    let item = allData.find(d => d.id === id);
+
+    document.getElementById("mv_number").value = item["MV NUMBER"];
+    document.getElementById("name").value = item["NAME"];
+    document.getElementById("address").value = item["ADDRESS"];
+    document.getElementById("phone").value = item["PHONE NUMBER"];
+    document.getElementById("ch_number").value = item["CH NUMBER"];
+    document.getElementById("type_work").value = item["TYPE OF WORK"];
+    document.getElementById("rupees").value = item["RUPEES"];
+
+    editId = id;
+  }
+});
+
+// DELETE MODE
+function handleDelete() {
+  deleteMode = !deleteMode;
+
+  document.getElementById("deleteBtn").innerText = deleteMode ? "Cancel" : "Delete";
+  document.getElementById("deleteHeader").style.display = deleteMode ? "table-cell" : "none";
+  document.getElementById("confirmDeleteBtn").style.display = deleteMode ? "inline-block" : "none";
+
+  loadRC();
+}
+
 // DELETE
 async function deleteSelected() {
   let selected = document.querySelectorAll('input[name="deleteRow"]:checked');
 
   for (let cb of selected) {
-    await fetch(`${BASE_URL}/delete-rc/${cb.value}`, { method: 'DELETE' });
+    await fetch(`${BASE_URL}/delete-rc/${cb.value}`, {
+      method: 'DELETE',
+      credentials: "include"
+    });
   }
 
   deleteMode = false;
+  document.getElementById("deleteBtn").innerText = "Delete";
+  document.getElementById("deleteHeader").style.display = "none";
+  document.getElementById("confirmDeleteBtn").style.display = "none";
+
   loadRC();
 }
 
-// LOGOUT
-function logout() {
-  fetch(`${BASE_URL}/logout`).then(() => {
-    window.location.href = "login.html";
-  });
+// SEARCH
+function filterRC() {
+  let s = document.getElementById("search").value.toLowerCase();
+
+  let f = allData.filter(i =>
+    (i["MV NUMBER"] || "").toLowerCase().includes(s) ||
+    (i["NAME"] || "").toLowerCase().includes(s)
+  );
+
+  renderTable(f);
 }
 
 // RESET
 function resetForm() {
   document.querySelectorAll("input").forEach(el => el.value = "");
+}
+
+// LOGOUT
+function logout() {
+  fetch(`${BASE_URL}/logout`, {
+    credentials: "include"
+  }).then(() => {
+    window.location.href = "/";
+    location.reload();
+  });
 }
 
 loadRC();
