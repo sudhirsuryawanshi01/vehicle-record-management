@@ -25,9 +25,11 @@
 
       <h2>Add RC Record</h2>
 
-<input id="mv_number" placeholder="MV Number" oninput="toUppercase('mv_number')">
-
-<input id="name" placeholder="Name" oninput="toUppercase('name')">
+<input id="mv_number" oninput="toUppercase('mv_number'); checkDuplicateRC()">
+<span id="mvHint" style="color:red; display:none;"></span>
+      
+<input id="name" oninput="toUppercase('name'); checkDuplicateRC()">
+<span id="nameHint" style="color:red; display:none;"></span>
 
 <input id="address" placeholder="Address" oninput="toUppercase('address')">
 
@@ -263,6 +265,43 @@ function logout() {
 }
 
 loadRC();
+
+
+  function checkDuplicateRC() {
+  let mvInput = document.getElementById("mv_number").value.toLowerCase().trim();
+  let nameInput = document.getElementById("name").value.toLowerCase().trim();
+
+  let mvHint = document.getElementById("mvHint");
+  let nameHint = document.getElementById("nameHint");
+
+  // reset
+  mvHint.style.display = "none";
+  nameHint.style.display = "none";
+
+  // MV NUMBER check
+  if (mvInput) {
+    let found = allData.some(item =>
+      (item["MV NUMBER"] || "").toLowerCase().trim() === mvInput
+    );
+
+    if (found) {
+      mvHint.innerText = "⚠ MV NUMBER already exists";
+      mvHint.style.display = "block";
+    }
+  }
+
+  // NAME check
+  if (nameInput) {
+    let found = allData.some(item =>
+      (item["NAME"] || "").toLowerCase().trim() === nameInput
+    );
+
+    if (found) {
+      nameHint.innerText = "⚠ Name already exists";
+      nameHint.style.display = "block";
+    }
+  }
+}
 </script>
 
 </body>
