@@ -61,9 +61,7 @@ def login():
 
         if res.data:
             session['user'] = username
-            return jsonify({"success": True})
-
-        return jsonify({"success": False})
+            return jsonify({"success": True}), 200
 
     except Exception as e:
         print("LOGIN ERROR:", e)
